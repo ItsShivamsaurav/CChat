@@ -12,7 +12,22 @@ const User = require("../models/user");
       if (!chatrooms || chatrooms.length === 0) {
         return res.status(404).json({ message: 'No recent chats found for this user.' });
       }
-      return res.status(200).json({ chatrooms });
+      const recentChats = await Promise.all(chatrooms.map(async (room) => {
+      const otherUser = room.participants.find(p => p._id.toString() !== userId);
+
+       return {
+        name: otherUser?.name || 'Unknown',
+        avatar: otherUser?.avatar || 'https://i.pravatar.cc/150?u=default',
+        lastMessage:'No messages yet',
+        chatRoomId: room._id,
+        updatedAt: room.updatedAt
+      };
+    }));
+      
+
+
+
+       return res.status(200).json(recentChats);
     } catch (error) {
       console.error('Error fetching recent chats:', error);
       return res.status(500).json({ message: 'Server error' });

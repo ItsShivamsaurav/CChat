@@ -1,9 +1,10 @@
-import React from 'react';
+import {React, useState} from 'react';
 import './scrollbar.css'; // Import custom scrollbar styles
 import Navbar from './navbar';
 import axios from "axios";
 
 const RecentChats = () => {
+  const {conversations, setConversations} = useState([]);
 
   const axiosGetData = async () => {
     const payload = {
@@ -11,50 +12,51 @@ const RecentChats = () => {
     }
     try {
       const response = await axios.get("http://localhost:3000/login", payload);
-      console.log(response);
+      setConversations(response.data);
+      // console.log(response);
     } catch (error) {
       console.log(error);
     }
   }
 
-  const conversations = [
-    {
-      name: 'Aarav Mehta',
-      avatar: 'https://i.pravatar.cc/150?img=12',
-      lastMessage: 'Let’s catch up tomorrow evening!',
-      timestamp: 'Today at 3:45 PM',
-    },
-    {
-      name: 'Zoya Khan',
-      avatar: 'https://i.pravatar.cc/150?img=33',
-      lastMessage: 'Got the files. Will review tonight.',
-      timestamp: 'Yesterday at 9:12 PM',
-    },
-    {
-      name: 'Ravi Sharma',
-      avatar: 'https://i.pravatar.cc/150?img=25',
-      lastMessage: 'Thanks for the help earlier!',
-      timestamp: 'Monday at 11:03 AM',
-    },
-    {
-      name: 'Neha Verma',
-      avatar: 'https://i.pravatar.cc/150?img=45',
-      lastMessage: 'Can you send the invoice again?',
-      timestamp: 'Sunday at 6:30 PM',
-    },
-    {
-      name: 'Kabir Singh',
-      avatar: 'https://i.pravatar.cc/150?img=18',
-      lastMessage: 'Let’s meet at the café.',
-      timestamp: 'Saturday at 2:15 PM',
-    },
-    {
-      name: 'Simran Kaur',
-      avatar: 'https://i.pravatar.cc/150?img=29',
-      lastMessage: 'Loved your latest post!',
-      timestamp: 'Friday at 10:00 AM',
-    },
-  ];
+  // const conversations = [
+  //   {
+  //     name: 'Aarav Mehta',
+  //     avatar: 'https://i.pravatar.cc/150?img=12',
+  //     lastMessage: 'Let’s catch up tomorrow evening!',
+  //     timestamp: 'Today at 3:45 PM',
+  //   },
+  //   {
+  //     name: 'Zoya Khan',
+  //     avatar: 'https://i.pravatar.cc/150?img=33',
+  //     lastMessage: 'Got the files. Will review tonight.',
+  //     timestamp: 'Yesterday at 9:12 PM',
+  //   },
+  //   {
+  //     name: 'Ravi Sharma',
+  //     avatar: 'https://i.pravatar.cc/150?img=25',
+  //     lastMessage: 'Thanks for the help earlier!',
+  //     timestamp: 'Monday at 11:03 AM',
+  //   },
+  //   {
+  //     name: 'Neha Verma',
+  //     avatar: 'https://i.pravatar.cc/150?img=45',
+  //     lastMessage: 'Can you send the invoice again?',
+  //     timestamp: 'Sunday at 6:30 PM',
+  //   },
+  //   {
+  //     name: 'Kabir Singh',
+  //     avatar: 'https://i.pravatar.cc/150?img=18',
+  //     lastMessage: 'Let’s meet at the café.',
+  //     timestamp: 'Saturday at 2:15 PM',
+  //   },
+  //   {
+  //     name: 'Simran Kaur',
+  //     avatar: 'https://i.pravatar.cc/150?img=29',
+  //     lastMessage: 'Loved your latest post!',
+  //     timestamp: 'Friday at 10:00 AM',
+  //   },
+  // ];
 
   return (
   

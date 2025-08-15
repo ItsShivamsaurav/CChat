@@ -11,8 +11,8 @@ const Navbar = () => {
     e.preventDefault();
 
     
-    const res = await fetch(`/api/users/search?username=${searchQuery}`);
-    const user = await res.json();
+    // const res = await fetch(`/api/users/search?username=${searchQuery}`);
+    // const user = await res.json();
 
     if (user && user._id) {
       navigate(`/${profile._id}/${user._id}/chatInterface`);
@@ -26,7 +26,7 @@ const Navbar = () => {
       <div className="bg-gradient-to-r from-[#1f1c2c] via-[#928dab] to-[#2c3e50] rounded-full shadow-xl px-8 py-3 flex items-center space-x-6">
         <ul className="flex space-x-8 text-white font-semibold text-sm">
           <NavItem to={`/${profile?._id}/recentchats`} label="Recent Chat" />
-          <NavItem to={`/${profile?._id}/${id2}`} label="Recent Chat" />
+          <NavItem to={`/${profile?._id}/recentchats`} label="Recent Chat" />
           <NavItem to={`/${profile?._id}/globalChat`} label="Global Chat" />
           <NavItem to={`/${profile?._id}/profileview`} label="Profile" />
           <NavItem to={`/${profile?._id}/logout`} label="Logout" />

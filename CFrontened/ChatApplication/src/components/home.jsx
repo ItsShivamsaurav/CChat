@@ -4,6 +4,7 @@ import RegisterModal from './register';
 import LoginModal from './login';
 import { useUser } from './context';
 import RecentChats from './recentChat';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
   const [showRegister, setShowRegister] = useState(false);
