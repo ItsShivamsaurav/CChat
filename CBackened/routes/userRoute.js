@@ -19,15 +19,15 @@ const user = await User.create({
  }
 });
 
-
 router.post('/login', async (req, res) => {
-    
     try{
         const {email, password} = req.body;
         const token = await User.matchPasswordAndGenerateToken(email, password);
         const user = await User.findOne({ email }).select('-password');
+        // console.log(user);
         return res.json({token, user});
     }catch(e){
+      console.log("Error in login", e);
         return res.send("Inncorect email or password");
     }
 });
@@ -49,23 +49,5 @@ router.get('/:id/profile', async (req, res) => {
   }
 });
 
-
-
-// router.get('/:id1/:id2', async (req, res)=>{
-    
-// try {
-//     const userId = req.params.id2;
-//     const user = await User.findById(userId).select('-password'); // Exclude sensitive fields
-
-//     if (!user) {
-//       return res.status(404).json({ message: 'User not found' });
-//     }
-
-//     res.status(200).json(user);
-//   } catch (error) {
-//     console.error('Error fetching user profile:', error);
-//     res.status(500).json({ message: 'Server error' });
-//   }
-// });
 
 module.exports = router;

@@ -4,6 +4,9 @@ const ChatRoom = require("../models/chatRoom");
 const User = require("../models/user");
 
   router.get('/:id1/recentchats', async (req, res) => {
+
+   
+
     try {
       const userId = req.params.id1;
       const chatrooms = await ChatRoom.find({ participants: userId })
@@ -12,11 +15,14 @@ const User = require("../models/user");
       if (!chatrooms || chatrooms.length === 0) {
         return res.status(404).json({ message: 'No recent chats found for this user.' });
       }
+      // console.log(chatrooms);
       const recentChats = await Promise.all(chatrooms.map(async (room) => {
-      const otherUser = room.participants.find(p => p._id.toString() !== userId);
+      const otherUser = room.participants.find(p => p.toString() !== userId);
+      // console.log(otherUser);
+
 
        return {
-        name: otherUser?.name || 'Unknown',
+        name: otherUser ,
         avatar: otherUser?.avatar || 'https://i.pravatar.cc/150?u=default',
         lastMessage:'No messages yet',
         chatRoomId: room._id,

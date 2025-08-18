@@ -28,9 +28,26 @@ module.exports = (io) => {
       }
     });
 
-    socket.on('sendMessage', ({ roomId, message }) => {
-      io.to(roomId).emit('receiveMessage', message);
-    });
+    socket.on('sendMessage', ({ roomId, message, senderId }) => {
+  const msg = {
+    senderId,
+    content: message,
+    timestamp: new Date()
+  };
+  io.to(roomId).emit('receiveMessage', msg);
+});
+
+
+    socket.on('disconnect', () => {
+  for (const userId in userSockets) {
+    if (userSockets[userId] === socket.id) {
+      delete userSockets[userId];
+      break;
+    }
+  }
+  console.log('User disconnected:', socket.id);
+});
+
   });
 
   // Expose userSockets for use in routes

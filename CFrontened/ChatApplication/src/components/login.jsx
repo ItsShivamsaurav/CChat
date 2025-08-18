@@ -19,9 +19,8 @@ const LoginPage = ({onClose}) => {
     try {
 
       const response = await axios.post("http://localhost:3000/user/login", postData);
-     setProfile(response.data.user);
-      console.log(profile);
-      navigate(`/${profile._id}/recentchats`);
+      setProfile(response.data.user);
+      navigate(`/${response.data.user._id}/recentchats`);
     } catch (error) {
       console.log(error);
       

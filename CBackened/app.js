@@ -9,6 +9,7 @@ const cors = require('cors');
 
 const userRoute = require("./routes/userRoute")
 const chatRoomRoute = require("./routes/chatRoomRoute")
+const messageRoute = require("./routes/messageRoute");
 
 
 
@@ -45,7 +46,8 @@ app.use(checkForAuthenticationCookie("token"));
 
 
 
-app.use('/', userRoute);
+app.use('/user', userRoute);
+app.use('/message', messageRoute);
 app.use('/chatroom', chatRoomRoute);
 
 app.get('/', (req, res) => {

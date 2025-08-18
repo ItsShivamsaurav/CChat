@@ -1,12 +1,45 @@
 import React, { useState,useEffect } from 'react';
+// import {axios} from 'axios';
+// import { useUser } from "./context";
+import { useParams } from 'react-router-dom';
+import axios from "axios";
+// import { useLocation } from 'react-router-dom';
 
 import { io } from 'socket.io-client';
+import { use } from 'react';
 
 const socket = io('http://localhost:3000');
 
 const ChatInterface = () => {
+  const { userid1, userid2, chatroomId } = useParams();
+  const [messages, setMessages] = useState([]);
+  const [messageinput, setMessageInput] = useState('');
 
-const [messages, setMessages] = useState([]);
+
+const axiosPostData = async () => {
+  try {
+     console.log("Axios Post:");
+    const response = await axios.post(`http://localhost:3000/message/${userid1}/message`, {
+      senderId: userid1,
+      receiverId: userid2,
+      chatRoomId: chatroomId,
+      message: messageinput
+    });
+   
+    console.log('Message sent:', response);
+  } catch (error) {
+    console.error('Error sending message:', error);
+  }
+};
+
+
+  // useEffect(() => {
+  //   axiosPostData();
+  //   console.log('chatroomId:', chatroomId);
+  //   console.log('ChatInterface mounted');
+  //   console.log('User 1:', userid1);
+  //   console.log('User 2:', userid2);
+  // }, []);
 
   useEffect(() => {
     socket.on('receiveMessage', (data) => {
@@ -16,23 +49,23 @@ const [messages, setMessages] = useState([]);
     return () => socket.off('receiveMessage');
   }, []);
 
-  const sendMessage = () => {
-    socket.emit('sendMessage', {roomId:1 ,message: input });
-  };
+  // const sendMessage = () => {
+  //   socket.emit('sendMessage', {roomId:1 ,message: input });
+  // };
 
   // const [messages, setMessages] = useState([
   //   { id: 1, sender: 'Elena', text: 'Hey, have you tried the new CChat voice rooms?' },
   //   { id: 2, sender: 'You', text: 'Not yet! Are they as good as they sound?' },
   //   { id: 3, sender: 'Elena', text: 'Better. It’s like talking in velvet.' },
   // ]);
-  const [input, setInput] = useState('');
 
-  // const sendMessage = (e) => {
-  //   e.preventDefault();
-  //   if (!input.trim()) return;
-  //   setMessages([...messages, { id: Date.now(), sender: 'You', text: input }]);
-  //   setInput('');
-  // };
+
+  const sendMessage = (e) => {
+    e.preventDefault();
+    // if (!messageinput.trim()) return;
+    axiosPostData();
+    e.target.reset();
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#1f1c2c] via-[#928dab] to-[#2c3e50] flex flex-col items-center justify-center text-white px-4 py-23">
@@ -67,8 +100,8 @@ const [messages, setMessages] = useState([]);
         <form onSubmit={sendMessage} className="px-6 py-4 border-t border-white/10 flex items-center space-x-4">
           <input
             type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
+            value={messageinput}
+            onChange={(e) => setMessageInput(e.target.value)}
             placeholder="Type your message..."
             className="flex-1 px-4 py-2 rounded-lg bg-white/10 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-purple-400"
           />

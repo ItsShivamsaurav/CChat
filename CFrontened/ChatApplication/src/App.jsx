@@ -9,6 +9,7 @@ import HomePage from './components/home'
 import ChatInterface from './components/chatInterface'
 import ProfileView from './components/profile'
 import RecentChats from './components/recentChat'
+import LogOut from './components/logout'
 import { UserProvider, useUser } from './components/context'
 import Navbar from "./components/navbar";
 
@@ -29,10 +30,11 @@ function App() {
           <Route path="/" element={<HomePage/>}/>
           <Route path="/:userId" element={<HomePage/>}/>
           <Route path="/login" element={<LoginPage/> }/>
+          <Route path="/:userid1/logout" element={<LogOut/> }/>
           <Route path="/register" element={<RegisterPage/> }/>
-          <Route path="/:userid1/:userid2/chatinterface" element={<ChatInterface/> }/>
           <Route path="/:userid1/recentchats" element={<RecentChats/>}/>
           <Route path="/:userid1/profileview/" element={<ProfileView/>}/>
+          <Route path="/:userid1/:userid2/:chatroomId/chatinterface" element={<ChatInterface/> }/>
         </Routes>
       </Router>
     </UserProvider>

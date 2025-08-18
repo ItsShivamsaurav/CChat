@@ -1,39 +1,52 @@
 import { useUser } from './context'; 
 import { useState } from 'react';
 import { useNavigate ,Link} from 'react-router-dom';
+import axios from 'axios';
 
 const Navbar = () => {
   const { profile } = useUser();
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
+  const axiosPostData = async ()=>{
+
+    try {
+
+      const response = await axios.post(`http://localhost:3000/chatroom/${profile._id}/${searchQuery}`);
+      console.log('Chatroom created:', response);
+      navigate(`/${profile._id}/${searchQuery}/${response.data.chatRoom._id}/chatInterface`);
+
+    } catch (error) {
+      console.error('Error creating chatroom:', error);
+    }
+  }
+
   const handleSearch = async (e) => {
     e.preventDefault();
-
-    
-    // const res = await fetch(`/api/users/search?username=${searchQuery}`);
-    // const user = await res.json();
-
-    if (user && user._id) {
-      navigate(`/${profile._id}/${user._id}/chatInterface`);
-    } else {
-      alert('User not found');
+    if (!searchQuery.trim()) {
+      alert('Please enter a username to search');
+      return;
     }
+    axiosPostData();
+    setSearchQuery('');
+    e.target.reset();
   };
 
+
   return (
+
     <nav className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 w-fit">
       <div className="bg-gradient-to-r from-[#1f1c2c] via-[#928dab] to-[#2c3e50] rounded-full shadow-xl px-8 py-3 flex items-center space-x-6">
         <ul className="flex space-x-8 text-white font-semibold text-sm">
           <NavItem to={`/${profile?._id}/recentchats`} label="Recent Chat" />
-          <NavItem to={`/${profile?._id}/recentchats`} label="Recent Chat" />
+          {/* <NavItem to={`/${profile?._id}/${profile?._id}/:chatroomId/chatinterface`} label="chatInterface" /> */}
           <NavItem to={`/${profile?._id}/globalChat`} label="Global Chat" />
           <NavItem to={`/${profile?._id}/profileview`} label="Profile" />
           <NavItem to={`/${profile?._id}/logout`} label="Logout" />
         </ul>
 
         {profile && (
-          <form onSubmit={handleSearch} className="flex items-center space-x-2">
+          <form onSubmit={handleSearch} className="flex items-center space-x-2 bg-gray-400">
             <input
               type="text"
               placeholder="Search username..."
@@ -52,8 +65,6 @@ const Navbar = () => {
       </div>
     </nav>
 
-
-   
   );
 };
 
