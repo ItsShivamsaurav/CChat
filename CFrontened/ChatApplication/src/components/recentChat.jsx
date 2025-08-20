@@ -7,7 +7,9 @@ import { useNavigate } from 'react-router-dom';
 
 const RecentChats = () => {
   const navigate = useNavigate();
-  const [recentchats, setRecentchats] = useState([]);
+  const {recentChats, setRecentChats} = useUser();
+  // const { recentchats = [], setRecentChats } = useUser() || {};
+
 
   const { profile } = useUser();
 
@@ -16,7 +18,7 @@ const RecentChats = () => {
       console.log("recentchat");
       const response = await axios.get(`http://localhost:3000/chatroom/${profile._id}/recentchats`);
       console.log(response.data);
-      setRecentchats(response.data);
+      setRecentChats(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -78,7 +80,7 @@ const RecentChats = () => {
 
         {/* Scrollable chat list with hidden scrollbar */}
         <div className="flex-1 overflow-y-auto space-y-4 pr-2 scrollbar-hide">
-          {recentchats.map((chat, index) => (
+          {recentChats.map((chat, index) => (
             <div
               key={index}
               onClick={() => handleChatClick(chat)}

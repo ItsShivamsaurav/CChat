@@ -16,12 +16,67 @@ const messageRoute = require("./routes/messageRoute");
 const app = express();
 const port = 3000;
 app.use(cors());
-
+const userRooms = {};
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: '*' },
+  cors: { origin: 'http://localhost:5173',
+    methods: ['GET', 'POST']
+   },
+
 });
 
+const userSockets = {}; 
+  io.on('connection', (socket) => {
+    console.log('User connected:', socket.id);
+
+    socket.on('registerUser', (userId) => {
+      userSockets[userId] = socket.id;
+      console.log(`Registered user ${userId} with socket ${socket.id}`);
+    });
+
+    socket.on('createRoom', (userId) => {
+      const roomId = uuidv4();
+      userRooms[userId] = roomId;
+      socket.join(roomId);
+      socket.emit('roomCreated', roomId);
+    });
+
+    socket.on('joinRoom', (chatroomId) => {
+      console.log("Hello from JoinRoom. roomId:", chatroomId);
+      // const roomId = userRooms[userId];
+      // if (roomId) {
+        socket.join(chatroomId);
+        socket.emit('joinedRoom', chatroomId);
+      // } else {
+        // socket.emit('error', 'No room found for this user');
+      // }
+    });
+
+socket.on('sendMessage', ({ roomId, message, receiverId, senderId }) => {
+  console.log('Message received from client:', message);
+  const msg = {
+    roomId,
+    senderId,
+    receiverId,
+    message,
+    timestamp: new Date()
+  };
+  socket.to(roomId).emit('receiveMessage', msg);
+  console.log('Message emitted to room:', roomId);
+});
+
+
+    socket.on('leaveRoom', () => {
+  for (const userId in userSockets) {
+    if (userSockets[userId] === socket.id) {
+      delete userSockets[userId];
+      break;
+    }
+  }
+  console.log('User disconnected:', socket.id);
+});
+
+  });
 
 
 
@@ -55,7 +110,7 @@ app.get('/', (req, res) => {
 } 
 );
 
-require('./socket/chatsocket')(io);
+// require('./socket/chatsocket')(io);
 
 server.listen(3000, () => {
   console.log('Server running on port 3000');

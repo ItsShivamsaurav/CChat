@@ -42,7 +42,7 @@ const User = require("../models/user");
 
 
  
-  // Optional: GET user by ID (you left this empty)
+  // create a new chatroom between two users
  router.post('/:id1/:id2', async (req, res) => {
   const { id1, id2 } = req.params;
 

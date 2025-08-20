@@ -1,53 +1,57 @@
-import React, { useState,useEffect } from 'react';
-// import {axios} from 'axios';
-// import { useUser } from "./context";
-import { useParams } from 'react-router-dom';
+import { React, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
-// import { useLocation } from 'react-router-dom';
+import { useUser } from './context';
 
-import { io } from 'socket.io-client';
-import { use } from 'react';
+import { io } from "socket.io-client";
 
-const socket = io('http://localhost:3000');
+const socket = io("http://localhost:3000", { autoConnect: false });
 
 const ChatInterface = () => {
   const { userid1, userid2, chatroomId } = useParams();
-  const [messages, setMessages] = useState([]);
-  const [messageinput, setMessageInput] = useState('');
+  const {messages, setMessages} = useUser();
+  const [messageinput, setMessageInput] = useState("");
 
+  const axiosPostData = async () => {
+    try {
+      console.log("Axios Post:");
+      const response = await axios.post(
+        `http://localhost:3000/message/${userid1}/message`,
+        {
+          senderId: userid1,
+          receiverId: userid2,
+          chatRoomId: chatroomId,
+          message: messageinput,
+        }
+      );
 
-const axiosPostData = async () => {
-  try {
-     console.log("Axios Post:");
-    const response = await axios.post(`http://localhost:3000/message/${userid1}/message`, {
-      senderId: userid1,
-      receiverId: userid2,
-      chatRoomId: chatroomId,
-      message: messageinput
-    });
-   
-    console.log('Message sent:', response);
-  } catch (error) {
-    console.error('Error sending message:', error);
-  }
-};
-
-
-  // useEffect(() => {
-  //   axiosPostData();
-  //   console.log('chatroomId:', chatroomId);
-  //   console.log('ChatInterface mounted');
-  //   console.log('User 1:', userid1);
-  //   console.log('User 2:', userid2);
-  // }, []);
+      console.log("Message sent:", response);
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
+  };
 
   useEffect(() => {
-    socket.on('receiveMessage', (data) => {
+    if (!socket.connected) {
+      socket.connect();
+    }
+    socket.emit("joinRoom", chatroomId);
+    console.log(`${userid1} Joined room: ${chatroomId}`);
+
+    socket.on("receiveMessage", (data) => {
+      console.log("Received message:", data);
+      console.log("Listening for receiveMessage...");
       setMessages((prev) => [...prev, data]);
+      console.log(data);
     });
 
-    return () => socket.off('receiveMessage');
-  }, []);
+    return () => {
+      // socket.off('receiveMessage');
+      // socket.emit('leaveRoom', chatroomId);
+      // socket.disconnect();
+      console.log(`Left room: ${chatroomId}`);
+    };
+  }, [chatroomId]);
 
   // const sendMessage = () => {
   //   socket.emit('sendMessage', {roomId:1 ,message: input });
@@ -59,11 +63,21 @@ const axiosPostData = async () => {
   //   { id: 3, sender: 'Elena', text: 'Better. It’s like talking in velvet.' },
   // ]);
 
-
   const sendMessage = (e) => {
     e.preventDefault();
-    // if (!messageinput.trim()) return;
+    const messageData = {
+      roomId: chatroomId,
+      senderId: userid1,
+      receiverId: userid2,
+      message: messageinput,
+      timestamp: new Date().toISOString(),
+    };
+
+    socket.emit("sendMessage", messageData);
     axiosPostData();
+    // Update local UI
+    setMessages((prev) => [...prev, { ...messageData, sender: "You" }]);
+    setMessageInput("");
     e.target.reset();
   };
 
@@ -81,23 +95,28 @@ const axiosPostData = async () => {
           {messages.map((msg) => (
             <div
               key={msg.id}
-              className={`flex ${msg.sender === 'You' ? 'justify-end' : 'justify-start'}`}
+              className={`flex ${
+                msg.sender === "You" ? "justify-end" : "justify-start"
+              }`}
             >
               <div
                 className={`max-w-xs px-4 py-2 rounded-lg ${
-                  msg.sender === 'You'
-                    ? 'bg-gradient-to-r from-purple-600 to-pink-500 text-white'
-                    : 'bg-white/10 text-white'
+                  msg.sender === "You"
+                    ? "bg-gradient-to-r from-purple-600 to-pink-500 text-white"
+                    : "bg-white/10 text-white"
                 }`}
               >
-                <p className="text-sm">{msg.text}</p>
+                <p className="text-sm">{msg.message}</p>
               </div>
             </div>
           ))}
         </div>
 
         {/* Input */}
-        <form onSubmit={sendMessage} className="px-6 py-4 border-t border-white/10 flex items-center space-x-4">
+        <form
+          onSubmit={sendMessage}
+          className="px-6 py-4 border-t border-white/10 flex items-center space-x-4"
+        >
           <input
             type="text"
             value={messageinput}
