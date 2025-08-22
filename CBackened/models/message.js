@@ -1,20 +1,20 @@
-const { Schema ,model} = require('mongoose');
+const { Schema, model } = require("mongoose");
 
 const messageSchema = new Schema(
   {
     senderId: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
     },
     receiverId: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
     },
     chatRoomId: {
       type: Schema.Types.ObjectId,
-      ref: 'ChatRoom',
+      ref: "ChatRoom",
       required: true,
     },
     message: {
@@ -28,11 +28,11 @@ const messageSchema = new Schema(
     },
     attachments: [
       {
-        type: String, 
+        type: String,
       },
     ],
   },
   { timestamps: true }
 );
 
-module.exports = model('message', messageSchema);
+module.exports = model("message", messageSchema);

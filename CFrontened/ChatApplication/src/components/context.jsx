@@ -1,13 +1,25 @@
 import { createContext, useContext, useState, useEffect, use } from "react";
 
-
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [profile, setProfile] = useState(null);
   const [recentChats, setRecentChats] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [token, setToken] = useState(null);
 
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem("token", token);
+    }
+  }, [token]);
 
   // PROFILE
   useEffect(() => {
@@ -23,7 +35,6 @@ export const UserProvider = ({ children }) => {
     }
   }, [profile]);
 
-
   // RECENT CHATS
   useEffect(() => {
     const storedChats = localStorage.getItem("recentChats");
@@ -36,7 +47,6 @@ export const UserProvider = ({ children }) => {
     // Save recentChats to localStorage whenever it updates
     localStorage.setItem("recentChats", JSON.stringify(recentChats));
   }, [recentChats]);
-
 
   // MESSAGES
   useEffect(() => {
@@ -51,7 +61,6 @@ export const UserProvider = ({ children }) => {
     localStorage.setItem("messages", JSON.stringify(messages));
   }, [messages]);
 
-
   // LOGOUT FUNCTION
   const logout = () => {
     setProfile(null);
@@ -64,7 +73,17 @@ export const UserProvider = ({ children }) => {
 
   return (
     <UserContext.Provider
-      value={{ profile, setProfile, recentChats, setRecentChats, messages,setMessages, logout }}
+      value={{
+        token,
+        setToken,
+        profile,
+        setProfile,
+        recentChats,
+        setRecentChats,
+        messages,
+        setMessages,
+        logout,
+      }}
     >
       {children}
     </UserContext.Provider>

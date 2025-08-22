@@ -1,19 +1,25 @@
-const {Schema, model} = require('mongoose');
-const { v4: uuidv4 } = require('uuid');
-
+const { Schema, model } = require("mongoose");
+const { v4: uuidv4 } = require("uuid");
 
 const chatRoomSchema = new Schema(
   {
-   chatRoomId: {
+    chatRoomId: {
       type: String,
       unique: true,
       default: uuidv4,
       trim: true,
     },
-    participants: [
+
+    participantsId: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'User',
+        ref: "User",
+        required: true,
+      },
+    ],
+    participantsUserName: [
+      {
+        type: String,
         required: true,
       },
     ],
@@ -24,16 +30,17 @@ const chatRoomSchema = new Schema(
     groupName: {
       type: String,
       trim: true,
+      default: "ChaWithMate",
     },
     groupAvatar: {
-      type: String, 
+      type: String,
     },
     lastMessage: {
       type: Schema.Types.ObjectId,
-      ref: 'Message',
+      ref: "Message",
     },
   },
   { timestamps: true }
 );
 
-module.exports = model('chatRoom', chatRoomSchema)
+module.exports = model("chatRoom", chatRoomSchema);
