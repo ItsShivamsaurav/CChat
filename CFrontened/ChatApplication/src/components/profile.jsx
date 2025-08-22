@@ -1,13 +1,13 @@
-import React from 'react';
+import React from "react";
 
 const ProfileView = () => {
   const user = {
-    name: 'Elena Kapoor',
-    username: '@elenak',
-    bio: 'Digital conversationalist. Lover of quiet spaces and loud ideas.',
-    location: 'Mumbai, India',
-    joined: 'March 2022',
-    avatar: 'https://i.pravatar.cc/150?img=47', // Replace with your own image
+    name: "Elena Kapoor",
+    username: "@elenak",
+    bio: "Digital conversationalist. Lover of quiet spaces and loud ideas.",
+    location: "Mumbai, India",
+    joined: "March 2022",
+    avatar: "https://i.pravatar.cc/150?img=47", // Replace with your own image
   };
 
   return (

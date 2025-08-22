@@ -1,60 +1,111 @@
-import React,{useState} from 'react';
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
+import Alert from "@mui/material/Alert";
+import { CircularProgress } from "@mui/material";
 
-const RegisterPage = ({onClose}) => {
+const RegisterPage = ({ onClose }) => {
+  const [name, setName] = useState(null);
+  const [password, setPassword] = useState(null);
+  // const [confirmPassword, setConfirmPassword] =useState(null);
+  const [userName, setUserName] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [alert, setAlert] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const [name, setName] =useState(null);
-  const [password, setPassword] =useState(null);
-  const [confirmPassword, setConfirmPassword] =useState(null);
-  const [email, setEmail] =useState(null);
-
-  const axiosPostData =async ()=>{
-    const postData ={
+  const axiosPostData = async () => {
+    setLoading(true);
+    const postData = {
       name,
+      userName,
       email,
       password,
     };
     try {
-      const response = await axios.post("http://localhost:3000/register", postData);
-      if(response.status === 200){
-        console.log("User Registered");
+      const response = await axios.post(
+        "http://localhost:3000/newuser/register",
+        postData
+      );
+      if (response.status === 200) {
+        console.log(response.data);
+        setAlert({ type: "success", message: "User registered successfully!" });
       }
-      console.log(response);
     } catch (error) {
-      console.log(error);
+      setAlert({ type: "error", message: "Registration failed. Try again." });
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
-  const handlesubmit = (e)=>{
+  const handlesubmit = (e) => {
     e.preventDefault();
     axiosPostData();
     e.target.reset();
-  }
+  };
+
+  useEffect(() => {
+    if (alert) {
+      const timer = setTimeout(() => setAlert(null), 4000);
+      return () => {
+        clearTimeout(timer);
+        navigate("/");
+      };
+    }
+  }, [alert]);
 
   return (
     <div className="fixed inset-0 flex items-center justify-center  bg-black/3  0 backdrop-blur-sm z-50">
       <div className="bg-gradient-to-br from-[#310e68] via-[#5f0f40] to-[#a4508b] rounded-xl shadow-2xl p-8 w-full max-w-md text-white relative">
-           <button
+        <button
           onClick={onClose}
           className="absolute top-4 right-4 text-white/70 hover:text-white text-xl"
         >
           &times;
         </button>
         <h2 className="text-3xl font-bold mb-6 text-center">Create Account</h2>
+
+        {alert && (
+          <div className="mb-4">
+            <Alert severity={alert.type}>{alert.message}</Alert>
+          </div>
+        )}
+        {loading && (
+          <div className="flex justify-center items-center mt-4">
+            <CircularProgress color="secondary" />
+          </div>
+        )}
+
         <form className="space-y-4" onSubmit={handlesubmit}>
           <div>
-            <label className="block text-sm font-medium mb-1" htmlFor="name">Full Name</label>
+            <label className="block text-sm font-medium mb-1" htmlFor="name">
+              Full Name
+            </label>
             <input
               type="text"
               id="name"
-              onChange={(e)=>setName(e.target.value)}
+              onChange={(e) => setName(e.target.value)}
               className="w-full px-4 py-2 rounded-lg bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-purple-400"
               placeholder="John Doe"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1" htmlFor="email">Email</label>
+            <label className="block text-sm font-medium mb-1" htmlFor="name">
+              UserName
+            </label>
+            <input
+              type="text"
+              id="username"
+              onChange={(e) => setUserName(e.target.value)}
+              className="w-full px-4 py-2 rounded-lg bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-purple-400"
+              placeholder="john_doe123"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1" htmlFor="email">
+              Email
+            </label>
             <input
               type="email"
               id="email"
@@ -64,16 +115,21 @@ const RegisterPage = ({onClose}) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1" htmlFor="password">Password</label>
+            <label
+              className="block text-sm font-medium mb-1"
+              htmlFor="password"
+            >
+              Password
+            </label>
             <input
               type="password"
               id="password"
-              onChange={(e)=>setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 rounded-lg bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-purple-400"
-              placeholder="••••••••"
+              placeholder="password"
             />
           </div>
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium mb-1" htmlFor="confirmPassword">Confirm Password</label>
             <input
               type="password"
@@ -82,7 +138,7 @@ const RegisterPage = ({onClose}) => {
               className="w-full px-4 py-2 rounded-lg bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-purple-400"
               placeholder="••••••••"
             />
-          </div>
+          </div> */}
           <button
             type="submit"
             className="w-full py-2 bg-gradient-to-r from-purple-700 via-purple-500 to-pink-500 hover:from-purple-800 hover:to-pink-600 rounded-lg font-semibold transition-all duration-300"
@@ -91,7 +147,10 @@ const RegisterPage = ({onClose}) => {
           </button>
         </form>
         <p className="mt-6 text-sm text-center text-white/80">
-          Already have an account? <a href="#" className="text-purple-300 hover:underline">Log in</a>
+          Already have an account?{" "}
+          <a href="#" className="text-purple-300 hover:underline">
+            Log in
+          </a>
         </p>
       </div>
     </div>

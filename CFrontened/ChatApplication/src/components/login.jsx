@@ -1,29 +1,46 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "./context";
 
+import Alert from "@mui/material/Alert";
+import { CircularProgress } from "@mui/material";
+
 const LoginPage = ({ onClose }) => {
   const navigate = useNavigate();
   const { profile, setProfile } = useUser();
+  // const {token, setToken } = useUser();
 
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
 
+  const [alert, setAlert] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const axiosPostData = async () => {
+    setLoading(true);
     const postData = {
       email,
       password,
     };
     try {
       const response = await axios.post(
-        "http://localhost:3000/user/login",
-        postData
+        "http://localhost:3000/newuser/login",
+        postData,
+        { timeout: 1000 }
       );
-      setProfile(response.data.user);
-      navigate(`/${response.data.user._id}/recentchats`);
+      if (response.status === 200) {
+        setAlert({ type: "success", message: "Verified user." });
+        document.cookie = `authToken=${response.data.token}; path=/; secure; samesite=strict`;
+        setProfile(response.data.user);
+        console.log("profile", response.data);
+        // console.log("token", token);
+        navigate(`/${response.data.user.userName}/recentchats`);
+      }
     } catch (error) {
-      console.log(error);
+      setAlert({ type: "error", message: "Login failed. Try again." });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -32,6 +49,13 @@ const LoginPage = ({ onClose }) => {
     axiosPostData();
     e.target.reset();
   };
+
+  useEffect(() => {
+    if (alert) {
+      const timer = setTimeout(() => setAlert(null), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [alert]);
 
   return (
     <div className="fixed inset-0 flex items-center justify-center  bg-black/3  0 backdrop-blur-sm z-50">
@@ -43,6 +67,18 @@ const LoginPage = ({ onClose }) => {
           &times;
         </button>
         <h2 className="text-3xl font-bold mb-6 text-center">Welcome Back</h2>
+
+        {alert && (
+          <div className="mb-4">
+            <Alert severity={alert.type}>{alert.message}</Alert>
+          </div>
+        )}
+        {loading && (
+          <div className="flex justify-center items-center mt-4">
+            <CircularProgress color="secondary" />
+          </div>
+        )}
+
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="block text-sm font-medium mb-1" htmlFor="email">

@@ -1,7 +1,7 @@
 import { React, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { useUser } from './context';
+import { useUser } from "./context";
 
 import { io } from "socket.io-client";
 
@@ -9,7 +9,7 @@ const socket = io("http://localhost:3000", { autoConnect: false });
 
 const ChatInterface = () => {
   const { userid1, userid2, chatroomId } = useParams();
-  const {messages, setMessages} = useUser();
+  const { messages, setMessages } = useUser();
   const [messageinput, setMessageInput] = useState("");
 
   const axiosPostData = async () => {
@@ -46,9 +46,9 @@ const ChatInterface = () => {
     });
 
     return () => {
-      // socket.off('receiveMessage');
-      // socket.emit('leaveRoom', chatroomId);
-      // socket.disconnect();
+      socket.off("receiveMessage");
+      socket.emit("leaveRoom", chatroomId);
+      socket.disconnect();
       console.log(`Left room: ${chatroomId}`);
     };
   }, [chatroomId]);
