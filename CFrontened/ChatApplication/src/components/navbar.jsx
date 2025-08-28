@@ -3,14 +3,17 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
+
+import Button from '@mui/material/Button';
+
 const Navbar = () => {
   const { profile } = useUser();
-  const { token } = useUser();
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+   const { logout } = useUser();
 
   const axiosPostData = async () => {
-    console.log("Creating chatroom with search query:", searchQuery);
+    // console.log("Creating chatroom with search query:", searchQuery);
     try {
       const response = await axios.post(
         `http://localhost:3000/chatroom/${profile.userName}/${searchQuery}`,
@@ -18,12 +21,12 @@ const Navbar = () => {
         { withCredentials: true }
       );
 
-      console.log("Chatroom created:", response);
+      // console.log("Chatroom created:", response);
       navigate(
         `/${profile.userName}/${searchQuery}/${response.data.chatRoom._id}/chatInterface`
       );
     } catch (error) {
-      console.error("Error creating chatroom:", error);
+      // console.error("Error creating chatroom:", error);
     }
   };
 
@@ -38,21 +41,32 @@ const Navbar = () => {
     e.target.reset();
   };
 
-  return (
-    <nav className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 w-fit">
+  const handleLogout = () => {
+    // console.log("Logging out...");
+    localStorage.removeItem('token');
+    logout();
+    // Navigate is handled by protected rouute
+    // navigate("");
+  };
+
+  return (<>
+  
+    {profile && <nav className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 w-fit">
       <div className="bg-gradient-to-r from-[#1f1c2c] via-[#928dab] to-[#2c3e50] rounded-full shadow-xl px-8 py-3 flex items-center space-x-6">
         <ul className="flex space-x-8 text-white font-semibold text-sm">
-          <NavItem to={`/${profile?._id}/recentchats`} label="Recent Chat" />
-          {/* <NavItem to={`/${profile?._id}/${profile?._id}/:chatroomId/chatinterface`} label="chatInterface" /> */}
+          <NavItem to={`/${profile?.userName}/recentchats`} label="Recent Chat" />
+          
           <NavItem
-            to={`/${profile?.userName}/globalChat`}
+            to={`/${profile?.userName}/globalchats`}
             label="Global Chat"
           />
-          <NavItem to={`/${profile?._id}/profileview`} label="Profile" />
-          <NavItem to={`/${profile?._id}/logout`} label="Logout" />
+          <NavItem to={`/${profile?.userName}/profileview`} label="Profile" />
+          
+          <Button onClick={handleLogout} variant="contained" color="error">
+        Logout
+      </Button>
         </ul>
 
-        {profile && (
           <form
             onSubmit={handleSearch}
             className="flex items-center space-x-2 bg-gray-400"
@@ -71,9 +85,10 @@ const Navbar = () => {
               Chat
             </button>
           </form>
-        )}
+       
       </div>
-    </nav>
+    </nav> }
+    </>
   );
 };
 

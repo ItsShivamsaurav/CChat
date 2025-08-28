@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useUser } from "./context";
@@ -14,7 +14,7 @@ const ChatInterface = () => {
 
   const axiosPostData = async () => {
     try {
-      console.log("Axios Post:");
+      // console.log("Axios Post:");
       const response = await axios.post(
         `http://localhost:3000/message/${userid1}/message`,
         {
@@ -22,46 +22,53 @@ const ChatInterface = () => {
           receiverId: userid2,
           chatRoomId: chatroomId,
           message: messageinput,
-        }
+        },
+        { withCredentials: true }
       );
 
-      console.log("Message sent:", response);
+      // console.log("Message sent:", response);
     } catch (error) {
-      console.error("Error sending message:", error);
+      // console.error("Error sending message:", error);
+    }
+  };
+
+  const axiosGetData = async () => {
+    try {
+      // console.log("Axios Get:");
+      const response = await axios.get(
+        `http://localhost:3000/message/${chatroomId}`,
+        {},
+        { withCredentials: true }
+      );
+      setMessages(response.data);
+      // console.log("Messages fetched:", response.data);
+    } catch (error) {
+      // console.error("Error fetching messages:", error);
     }
   };
 
   useEffect(() => {
+    axiosGetData();
     if (!socket.connected) {
       socket.connect();
     }
     socket.emit("joinRoom", chatroomId);
-    console.log(`${userid1} Joined room: ${chatroomId}`);
+    // console.log(`${userid1} Joined room: ${chatroomId}`);
 
     socket.on("receiveMessage", (data) => {
-      console.log("Received message:", data);
-      console.log("Listening for receiveMessage...");
+      // console.log("Received message:", data);
+      // console.log("Listening for receiveMessage...");
       setMessages((prev) => [...prev, data]);
-      console.log(data);
+      // console.log(data);
     });
 
     return () => {
       socket.off("receiveMessage");
       socket.emit("leaveRoom", chatroomId);
       socket.disconnect();
-      console.log(`Left room: ${chatroomId}`);
+      // console.log(`Left room: ${chatroomId}`);
     };
   }, [chatroomId]);
-
-  // const sendMessage = () => {
-  //   socket.emit('sendMessage', {roomId:1 ,message: input });
-  // };
-
-  // const [messages, setMessages] = useState([
-  //   { id: 1, sender: 'Elena', text: 'Hey, have you tried the new CChat voice rooms?' },
-  //   { id: 2, sender: 'You', text: 'Not yet! Are they as good as they sound?' },
-  //   { id: 3, sender: 'Elena', text: 'Better. It’s like talking in velvet.' },
-  // ]);
 
   const sendMessage = (e) => {
     e.preventDefault();
@@ -87,7 +94,7 @@ const ChatInterface = () => {
         {/* Header */}
         <div className="px-6 py-4 border-b border-white/10 flex justify-between items-center">
           <h2 className="text-xl font-semibold text-purple-300">CChat</h2>
-          <span className="text-sm text-white/60">Elena Kapoor</span>
+          <span className="text-sm text-white/60">{userid2}</span>
         </div>
 
         {/* Messages */}
@@ -96,7 +103,9 @@ const ChatInterface = () => {
             <div
               key={msg.id}
               className={`flex ${
-                msg.sender === "You" ? "justify-end" : "justify-start"
+                msg.sender === "You" || msg.senderId === userid1
+                  ? "justify-end"
+                  : "justify-start"
               }`}
             >
               <div

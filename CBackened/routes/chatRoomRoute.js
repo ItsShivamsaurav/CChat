@@ -4,7 +4,7 @@ const ChatRoom = require("../models/chatRoom");
 const User = require("../models/user");
 
 router.get("/:id1/recentchats", async (req, res) => {
-  console.log("Fetching recent chats for user:", req.params.id1);
+  // console.log("Fetching recent chats for user:", req.params.id1);
 
   try {
     const userId = req.params.id1;
@@ -34,10 +34,10 @@ router.get("/:id1/recentchats", async (req, res) => {
       })
     );
 
-    console.log("Recent chats fetched successfully:");
+    // console.log("Recent chats fetched successfully:");
     return res.status(200).json(recentChats);
   } catch (error) {
-    console.error("Error fetching recent chats:", error);
+    // console.error("Error fetching recent chats:", error);
     return res.status(500).json({ message: "Server error" });
   }
 });
@@ -71,7 +71,7 @@ router.post("/:userName1/:userName2", async (req, res) => {
     });
 
     if (existingRoom) {
-      console.log("Chatroom already exists:");
+      // console.log("Chatroom already exists:");
       return res
         .status(200)
         .json({ message: "Chatroom already exists", chatRoom: existingRoom });
@@ -85,14 +85,12 @@ router.post("/:userName1/:userName2", async (req, res) => {
 
     await newChatRoom.save();
 
-    console.log("New chatroom created:", newChatRoom);
-    // Emit an event to notify the users about the new chatroom
-    // socket.emit('newChatRoom', newChatRoom);
+    // console.log("New chatroom created:", newChatRoom);
     res
       .status(201)
       .json({ message: "New chatroom created", chatRoom: newChatRoom });
   } catch (error) {
-    console.error("Error creating chatroom:", error);
+    // console.error("Error creating chatroom:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });

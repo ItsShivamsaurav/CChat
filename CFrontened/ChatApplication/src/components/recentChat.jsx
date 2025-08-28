@@ -1,6 +1,5 @@
-import { React, useState, useEffect } from "react";
-import "./scrollbar.css"; // Import custom scrollbar styles
-import Navbar from "./navbar";
+import { useEffect } from "react";
+import "./scrollbar.css";
 import axios from "axios";
 import { useUser } from "./context";
 import { useNavigate } from "react-router-dom";
@@ -8,33 +7,32 @@ import { useNavigate } from "react-router-dom";
 const RecentChats = () => {
   const navigate = useNavigate();
   const { recentChats, setRecentChats } = useUser();
-  // const { recentchats = [], setRecentChats } = useUser() || {};
 
   const { profile } = useUser();
 
   const axiosGetData = async () => {
-    console.log("Fetching recent chats for user:", profile.userName);
+    // console.log("Fetching recent chats for user:", profile.userName);
     try {
       const response = await axios.get(
         `http://localhost:3000/chatroom/${profile.userName}/recentchats`,
         {},
         { withCredentials: true }
       );
-      console.log(response.data);
+      // console.log(response.data);
       setRecentChats(response.data);
-      console.log("recentchat", response.data);
+      // console.log("recentchat", response.data);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 
   useEffect(() => {
-    console.log("useEffect called for recent chats");
-    console.log("profile in recentchat :", profile);
+    // console.log("useEffect called for recent chats");
+    // console.log("profile in recentchat :", profile);
     if (profile?.userName) {
       axiosGetData();
     } else {
-      console.log("No profile found, skipping recent chats fetch");
+      // console.log("No profile found, skipping recent chats fetch");
     }
   }, [profile]);
 
@@ -42,7 +40,7 @@ const RecentChats = () => {
     navigate(
       `/${profile.userName}/${chat.name}/${chat.chatRoomId}/chatinterface`
     );
-    console.log(`Clicked on chat with ${chat.name}`);
+    // console.log(`Clicked on chat with ${chat.name}`);
   };
 
   return (

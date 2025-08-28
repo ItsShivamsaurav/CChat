@@ -5,17 +5,17 @@ function checkForAuthenticationCookie(cookieName) {
   return (req, res, next) => {
     // console.log(req.cookies.authToken);
     const tokenCookieValue = req.cookies.authToken;
-    console.log("Token cookie value:", tokenCookieValue);
+    // console.log("Token cookie value:", tokenCookieValue);
     if (!tokenCookieValue) {
       return next();
     }
     try {
       const userPayload = validateToken(tokenCookieValue);
       req.user = userPayload;
-      console.log("Cookie authenticated:", req.user);
+      // console.log("Cookie authenticated:", req.user);
       next();
     } catch (e) {
-      console.error("Authentication failed:", e);
+      // console.error("Authentication failed:", e);
       return res.status(403).json({ error: "Invalid token" });
     }
   };

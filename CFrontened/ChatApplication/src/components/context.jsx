@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, use } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 export const UserContext = createContext();
 
@@ -7,12 +7,16 @@ export const UserProvider = ({ children }) => {
   const [recentChats, setRecentChats] = useState([]);
   const [messages, setMessages] = useState([]);
   const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("profile");
+    if (storedUser) setProfile(JSON.parse(storedUser));
     if (storedToken) {
       setToken(storedToken);
     }
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -20,12 +24,6 @@ export const UserProvider = ({ children }) => {
       localStorage.setItem("token", token);
     }
   }, [token]);
-
-  // PROFILE
-  useEffect(() => {
-    const storedUser = localStorage.getItem("profile");
-    if (storedUser) setProfile(JSON.parse(storedUser));
-  }, []);
 
   useEffect(() => {
     if (profile) {
@@ -78,6 +76,7 @@ export const UserProvider = ({ children }) => {
         setToken,
         profile,
         setProfile,
+        loading,
         recentChats,
         setRecentChats,
         messages,

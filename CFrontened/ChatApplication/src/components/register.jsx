@@ -14,6 +14,10 @@ const RegisterPage = ({ onClose }) => {
   const [alert, setAlert] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [otpSend, setOtpSend] = useState(true);
+  const [otpverify, setOtpVerify] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [otpVerified, setOtpVerified] = useState(false);
 
   const axiosPostData = async () => {
     setLoading(true);
@@ -29,7 +33,7 @@ const RegisterPage = ({ onClose }) => {
         postData
       );
       if (response.status === 200) {
-        console.log(response.data);
+        // console.log(response.data);
         setAlert({ type: "success", message: "User registered successfully!" });
       }
     } catch (error) {
@@ -44,6 +48,54 @@ const RegisterPage = ({ onClose }) => {
     axiosPostData();
     e.target.reset();
   };
+
+  const handlesubmitSendOtp = async (e) => {
+    e.preventDefault();
+    setLoading(true);       
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/newuser/sendotp",
+        { email }
+      );
+      if (response.status === 200) {
+        // console.log(response.data);
+        setAlert({ type: "success", message: "otp send successfully!" });
+        setOtpSend(false);
+        setOtpVerify(true);
+        setOtpVerified(false);
+      }
+    } catch (error) {
+      setAlert({ type: "error", message: "otp send failed. Try again." });
+    } finally {
+      setLoading(false);
+    }
+    e.target.reset();
+  };
+
+  const handlesubmitOtpVerify = async (e) => {
+    // console.log("verifying otp", otp, email);
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/newuser/verifyotp",
+        { email, otp }
+      );
+      if (response.status === 200) {
+        // console.log(response.data);
+        setAlert({ type: "success", message: "otp verified successfully!" });
+        setOtpVerified(true);
+        setOtpVerify(false);    
+        setOtpSend(false);
+      }
+    } catch (error) {
+      setAlert({ type: "error", message: "otp verify failed. Try again." });
+    } finally {
+      setLoading(false);
+    }
+    e.target.reset();
+  };
+
 
   useEffect(() => {
     if (alert) {
@@ -77,7 +129,8 @@ const RegisterPage = ({ onClose }) => {
           </div>
         )}
 
-        <form className="space-y-4" onSubmit={handlesubmit}>
+
+        {otpVerified && <form className="space-y-4" onSubmit={handlesubmit}>
           <div>
             <label className="block text-sm font-medium mb-1" htmlFor="name">
               Full Name
@@ -109,7 +162,8 @@ const RegisterPage = ({ onClose }) => {
             <input
               type="email"
               id="email"
-              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+              disabled 
               className="w-full px-4 py-2 rounded-lg bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-purple-400"
               placeholder="you@example.com"
             />
@@ -129,23 +183,55 @@ const RegisterPage = ({ onClose }) => {
               placeholder="password"
             />
           </div>
-          {/* <div>
-            <label className="block text-sm font-medium mb-1" htmlFor="confirmPassword">Confirm Password</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              onChange={(e)=>setConfirmPassword(e.target.value)}
-              className="w-full px-4 py-2 rounded-lg bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-purple-400"
-              placeholder="••••••••"
-            />
-          </div> */}
           <button
             type="submit"
             className="w-full py-2 bg-gradient-to-r from-purple-700 via-purple-500 to-pink-500 hover:from-purple-800 hover:to-pink-600 rounded-lg font-semibold transition-all duration-300"
           >
             Register
           </button>
-        </form>
+        </form>}
+
+        {otpSend && <form className="space-y-4" onSubmit={handlesubmitSendOtp}>
+          <div>
+            <label className="block text-sm font-medium mb-1" htmlFor="email">
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2 rounded-lg bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-purple-400"
+              placeholder="you@example.com"
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full py-2 bg-gradient-to-r from-purple-700 via-purple-500 to-pink-500 hover:from-purple-800 hover:to-pink-600 rounded-lg font-semibold transition-all duration-300"
+          >
+            sendOtp
+          </button>
+        </form>}
+        {otpverify && <form className="space-y-4" onSubmit={handlesubmitOtpVerify}>
+           <div>
+            <label className="block text-sm font-medium mb-1" htmlFor="otp">
+              Otp
+            </label>
+            <input
+              type="text"
+              id="otp"
+              onChange={(e) => setOtp(e.target.value)}
+              className="w-full px-4 py-2 rounded-lg bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-purple-400"
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full py-2 bg-gradient-to-r from-purple-700 via-purple-500 to-pink-500 hover:from-purple-800 hover:to-pink-600 rounded-lg font-semibold transition-all duration-300"
+          >
+            verify otp
+          </button>
+        </form>}
+
+
         <p className="mt-6 text-sm text-center text-white/80">
           Already have an account?{" "}
           <a href="#" className="text-purple-300 hover:underline">

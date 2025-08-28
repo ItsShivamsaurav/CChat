@@ -1,29 +1,31 @@
-import { useUser } from "./context";
-import { useNavigate } from "react-router-dom";
+// import { useUser } from "./context";
+// import { useNavigate } from "react-router-dom";
 
-import { Button, Typography } from "@mui/material";
+// import { Button, Typography } from "@mui/material";
 
-const LogoutButton = () => {
-  const { logout } = useUser();
-  const navigate = useNavigate();
+// const LogoutButton = () => {
+//   const { logout } = useUser();
+//   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
+//   const handleLogout = () => {
+//     console.log("Logging out...");
+//     localStorage.removeItem('token');
+//     logout();
+//     navigate("");
+//   };
 
-  return (
-    <>
-      <Button
-        onClick={handleLogout}
-        variant="contained"
-        color="primary"
-        sx={{ marginRight: 2 }}
-      >
-        logout
-      </Button>
-    </>
-  );
-};
+//   return (
+//     <>
+//       <Button
+//         onClick={handleLogout}
+//         variant="contained"
+//         color="primary"
+//         sx={{ marginRight: 2 }}
+//       >
+//         logout
+//       </Button>
+//     </>
+//   );
+// };
 
-export default LogoutButton;
+// export default LogoutButton;

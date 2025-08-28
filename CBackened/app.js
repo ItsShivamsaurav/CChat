@@ -20,7 +20,7 @@ const port = 3000;
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.ORIGIN,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
@@ -30,7 +30,7 @@ const userRooms = {};
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: process.env.ORIGIN,
     credentials: true,
     methods: ["GET", "POST"],
   },
@@ -42,7 +42,7 @@ io.on("connection", (socket) => {
 
   socket.on("registerUser", (userId) => {
     userSockets[userId] = socket.id;
-    console.log(`Registered user ${userId} with socket ${socket.id}`);
+    // console.log(`Registered user ${userId} with socket ${socket.id}`);
   });
 
   socket.on("createRoom", (userId) => {
@@ -53,7 +53,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("joinRoom", (chatroomId) => {
-    console.log("Hello from JoinRoom. roomId:", chatroomId);
+    // console.log("Hello from JoinRoom. roomId:", chatroomId);
     // const roomId = userRooms[userId];
     // if (roomId) {
     socket.join(chatroomId);
@@ -64,7 +64,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", ({ roomId, message, receiverId, senderId }) => {
-    console.log("Message received from client:", message);
+    // console.log("Message received from client:", message);
     const msg = {
       roomId,
       senderId,
@@ -73,7 +73,7 @@ io.on("connection", (socket) => {
       timestamp: new Date(),
     };
     socket.to(roomId).emit("receiveMessage", msg);
-    console.log("Message emitted to room:", roomId);
+    // console.log("Message emitted to room:", roomId);
   });
 
   socket.on("leaveRoom", () => {
@@ -93,7 +93,7 @@ const {
 } = require("./middlewares/authentication");
 
 mongoose
-  .connect("mongodb://localhost:27017/CChat")
+  .connect(process.env.MONGO_URL)
   .then(() => console.log("Connected to MongoDb."))
   .catch((err) => console.log("Error ", err));
 
@@ -105,8 +105,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(checkForAuthenticationCookie("token"));
 
 app.use("/newuser", newUserRoute);
-app.use("/user", checkForAuthenticationCookie, userRoute);
-app.use("/message", checkForAuthenticationCookie, messageRoute);
+app.use("/user", checkForAuthenticationCookie("token"), userRoute);
+app.use("/message", checkForAuthenticationCookie("token"), messageRoute);
 app.use("/chatroom", checkForAuthenticationCookie("token"), chatRoomRoute);
 
 app.get("/", (req, res) => {

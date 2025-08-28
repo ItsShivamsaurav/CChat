@@ -16,11 +16,11 @@ const userSchema = new Schema(
     },
     profilePic: {
       type: String,
-      default: "https://i.pravatar.cc/150?img=5",
+      default: "https://i.pravatar.cc/150",
     },
     bio: {
       type: String,
-      default: "Hey there! I am using CChat.",
+      default: "I am this and who are u.",
       trim: true,
     },
     status: {
@@ -78,15 +78,10 @@ const userSchema = new Schema(
           type: Schema.Types.ObjectId,
           ref: "chatRoom",
         },
-        // withUser: {
         chatRoomId: {
           type: Schema.Types.ObjectId,
           ref: "chatRoom",
         },
-        // withUser: {
-        //   type: Schema.Types.ObjectId,
-        //   ref: 'User'
-        // },
         updatedAt: Date,
       },
     ],

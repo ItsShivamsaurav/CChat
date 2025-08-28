@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "./context";
@@ -33,7 +33,7 @@ const LoginPage = ({ onClose }) => {
         setAlert({ type: "success", message: "Verified user." });
         document.cookie = `authToken=${response.data.token}; path=/; secure; samesite=strict`;
         setProfile(response.data.user);
-        console.log("profile", response.data);
+        // console.log("profile", response.data);
         // console.log("token", token);
         navigate(`/${response.data.user.userName}/recentchats`);
       }
