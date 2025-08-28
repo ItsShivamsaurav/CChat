@@ -4,11 +4,11 @@ const userSockets = {}; // NEW: maps userId to socket.id
 
 module.exports = (io) => {
   io.on("connection", (socket) => {
-    console.log("User connected:", socket.id);
+    // console.log("User connected:", socket.id);
 
     socket.on("registerUser", (userId) => {
       userSockets[userId] = socket.id;
-      console.log(`Registered user ${userId} with socket ${socket.id}`);
+      // console.log(`Registered user ${userId} with socket ${socket.id}`);
     });
 
     socket.on("createRoom", (userId) => {
@@ -44,7 +44,7 @@ module.exports = (io) => {
           break;
         }
       }
-      console.log("User disconnected:", socket.id);
+      // console.log("User disconnected:", socket.id);
     });
   });
 

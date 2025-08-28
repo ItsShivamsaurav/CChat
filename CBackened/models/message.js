@@ -3,12 +3,12 @@ const { Schema, model } = require("mongoose");
 const messageSchema = new Schema(
   {
     senderId: {
-      type: Schema.Types.ObjectId,
+      type: String,
       ref: "User",
       required: true,
     },
     receiverId: {
-      type: Schema.Types.ObjectId,
+      type: String,
       ref: "User",
       required: true,
     },
@@ -21,6 +21,10 @@ const messageSchema = new Schema(
       type: String,
       required: true,
       trim: true,
+    },
+    isDelivered: {
+      type: Boolean,
+      default: false,   
     },
     isRead: {
       type: Boolean,

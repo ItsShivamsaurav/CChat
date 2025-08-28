@@ -1,4 +1,4 @@
-node_modules/
-dist/
-build/
+# Root-level ignore
 .env
+*.log
+node_modules/

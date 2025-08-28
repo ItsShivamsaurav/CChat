@@ -1,13 +1,34 @@
 import React from "react";
+import { useUser } from "./context";
+import { useEffect,useState } from "react";
+
+import { CircularProgress } from "@mui/material";
 
 const ProfileView = () => {
+  const { profile } = useUser();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (profile) {
+      setLoading(false);
+    }
+  }, [profile]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-gradient-to-br from-[#1f1c2c] via-[#928dab] to-[#2c3e50]">
+        <CircularProgress color="secondary" />
+      </div>
+    );
+  }
+
   const user = {
-    name: "Elena Kapoor",
-    username: "@elenak",
-    bio: "Digital conversationalist. Lover of quiet spaces and loud ideas.",
+    name: profile.name,
+    username: profile.userName,
+    bio: profile.status,
     location: "Mumbai, India",
     joined: "March 2022",
-    avatar: "https://i.pravatar.cc/150?img=47", // Replace with your own image
+    avatar: "https://i.pravatar.cc/150",
   };
 
   return (
