@@ -16,6 +16,8 @@ require("dotenv").config();
 
 const app = express();
 const server = http.createServer(app);
+const PORT = process.env.PORT;
+
 
 // we hav to define separate cors for socket.io and express app
 // because socket.io uses its own server and express app uses its own server.
