@@ -35,10 +35,10 @@ const LoginPage = ({ onClose }) => {
         document.cookie = `authToken=${response.data.token}; path=/; secure; samesite=strict`;
         setProfile(response.data.user);
         console.log("profile", response.data);
-        console.log("token", token);
         navigate(`/${response.data.user.userName}/recentchats`);
       }
     } catch (error) {
+      console.log("Error in logging...",error);
       setAlert({ type: "error", message: "Login failed. Try again." });
     } finally {
       setLoading(false);
