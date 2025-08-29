@@ -15,7 +15,7 @@ const newUserRoute = require("./routes/newUserRoute");
 require("dotenv").config();
 
 const app = express();
-const port = 3000;
+const server = http.createServer(app);
 
 // we hav to define separate cors for socket.io and express app
 // because socket.io uses its own server and express app uses its own server.
@@ -29,7 +29,6 @@ app.use(
 );
 
 const userRooms = {};
-const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: process.env.ORIGIN,
@@ -117,6 +116,6 @@ app.get("/", (req, res) => {
 
 // require('./socket/chatsocket')(io);
 
-server.listen(3000, () => {
-  console.log("Server running on port 3000");
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
 });
