@@ -28,7 +28,7 @@ const LoginPage = ({ onClose }) => {
       const response = await axios.post(
         `${import.meta.env.VITE_ORIGIN}/newuser/login`,
         postData,
-        { timeout: 1000 }
+        { timeout: 9000 }
       );
        if (response.status === 200) {
         console.log("response: ",response);
