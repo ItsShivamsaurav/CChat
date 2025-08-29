@@ -30,18 +30,22 @@ const LoginPage = ({ onClose }) => {
         postData,
         { timeout: 1000 }
       );
-      if (response.status === 200) {
+       if (response.status === 200) {
+        console.log("response: ",response);
+        // console.log('response',x);
         setAlert({ type: "success", message: "Verified user." });
         document.cookie = `authToken=${response.data.token}; path=/; secure; samesite=strict`;
         setProfile(response.data.user);
         console.log("profile", response.data);
         navigate(`/${response.data.user.userName}/recentchats`);
       }
+      
     } catch (error) {
       console.log("Error in logging...",error);
       setAlert({ type: "error", message: "Login failed. Try again." });
     } finally {
       setLoading(false);
+     
     }
   };
 
