@@ -19,6 +19,7 @@ const LoginPage = ({ onClose }) => {
 
   const axiosPostData = async () => {
     setLoading(true);
+    console.log("Logging in user:", email);
     const postData = {
       email,
       password,
@@ -33,8 +34,8 @@ const LoginPage = ({ onClose }) => {
         setAlert({ type: "success", message: "Verified user." });
         document.cookie = `authToken=${response.data.token}; path=/; secure; samesite=strict`;
         setProfile(response.data.user);
-        // console.log("profile", response.data);
-        // console.log("token", token);
+        console.log("profile", response.data);
+        console.log("token", token);
         navigate(`/${response.data.user.userName}/recentchats`);
       }
     } catch (error) {

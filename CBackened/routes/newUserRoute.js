@@ -5,7 +5,7 @@ const { sendOtpEmail, generateOtp } = require("../services/otp");
 const OtpModel = require("../models/otp");
 
 router.post("/register", async (req, res) => {
-  // console.log("Registering new user");
+  console.log("Registering new user");
   const { name, userName, email, password } = req.body;
   try {
     const user = await User.create({
@@ -14,10 +14,10 @@ router.post("/register", async (req, res) => {
       email,
       password,
     });
-    // console.log("User created", user);
+    console.log("User created", user);
     return res.status(200).json({ message: "User registered successfully!" });
   } catch (e) {
-    // console.log("Error in creating user", e);
+    console.log("Error in creating user", e);
     return res
       .status(400)
       .json({ message: "User already exists or invalid data." });
@@ -25,28 +25,28 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  // console.log("Logging....");
+  console.log("Logging....");
   try {
     const { email, password } = req.body;
-    // console.log("Login attempt for user:", email);
+    console.log("Login attempt for user:", email);
     const token = await User.matchPasswordAndGenerateToken(email, password);
     const user = await User.findOne({ email }).select(
       "-password -salt -email -_id -__v"
     );
-    // console.log(user);
+    console.log("Logged In ",user);
     return res.json({ token, user });
   } catch (e) {
-    // console.log("Error in login", e);
+    console.log("Error in login", e);
     return res.send("Inncorect email or password");
   }
 });
 
 router.post("/sendotp", async (req, res) => {
-  // console.log("Sending OTP....");
+  console.log("Sending OTP....");
   const { email } = req.body;
   try {
     const otp = generateOtp();
-    // console.log("Generated OTP:", otp);
+    console.log("Generated OTP:", otp);
     await sendOtpEmail(email, otp);
     await OtpModel.findOneAndUpdate(
       { email },
@@ -55,30 +55,30 @@ router.post("/sendotp", async (req, res) => {
     );
     return res.status(200).json({ message: "OTP sent successfully!" });
   } catch (e) {
-    // console.log("Error in sending OTP", e);
+    console.log("Error in sending OTP", e);
     return res.status(500).json({ message: "Failed to send OTP." });
   }
 });
 
 router.post("/verifyotp", async (req, res) => {
-  // console.log("Verifying OTP....");
+  console.log("Verifying OTP....");
   const { email, otp } = req.body;
   try {
     const record = await OtpModel.findOne({ email }).sort({ createdAt: -1 }); // Get the latest OTP record
-    // console.log("OTP record found:", record);
+    console.log("OTP record found:", record);
     if (!record) {
-      // console.log("No OTP record found for email:", email);
+      console.log("No OTP record found for email:", email);
       return res
         .status(400)
         .json({ message: "No OTP request found for this email." });
     }
     if (record.otp !== otp) {
-      // console.log("Invalid OTP for email:", email);
+      console.log("Invalid OTP for email:", email);
       return res.status(400).json({ message: "Invalid OTP." });
     }
     // OTP is valid and not expired
     await OtpModel.findOneAndDelete({ email }); // Remove OTP record after successful verification
-    // console.log("OTP verified for email:", email);
+    console.log("OTP verified for email:", email);
     return res.status(200).json({ message: "OTP verified successfully!" });
   } catch (e) {
     console.log("Error in verifying OTP", e);
