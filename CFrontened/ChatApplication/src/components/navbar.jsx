@@ -16,7 +16,7 @@ const Navbar = () => {
     // console.log("Creating chatroom with search query:", searchQuery);
     try {
       const response = await axios.post(
-        `http://localhost:3000/chatroom/${profile.userName}/${searchQuery}`,
+        `${import.meta.env.VITE_ORIGIN}/chatroom/${profile.userName}/${searchQuery}`,
         {},
         { withCredentials: true }
       );
@@ -46,7 +46,7 @@ const Navbar = () => {
     localStorage.removeItem('token');
     logout();
     // Navigate is handled by protected rouute
-    // navigate("");
+    navigate("/");
   };
 
   return (<>

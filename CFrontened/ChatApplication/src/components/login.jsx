@@ -25,7 +25,7 @@ const LoginPage = ({ onClose }) => {
     };
     try {
       const response = await axios.post(
-        "http://localhost:3000/newuser/login",
+        `${import.meta.env.VITE_ORIGIN}/newuser/login`,
         postData,
         { timeout: 1000 }
       );

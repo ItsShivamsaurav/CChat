@@ -12,6 +12,8 @@ const chatRoomRoute = require("./routes/chatRoomRoute");
 const messageRoute = require("./routes/messageRoute");
 const newUserRoute = require("./routes/newUserRoute");
 
+require("dotenv").config();
+
 const app = express();
 const port = 3000;
 
@@ -93,7 +95,7 @@ const {
 } = require("./middlewares/authentication");
 
 mongoose
-  .connect(process.env.MONGO_URL)
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("Connected to MongoDb."))
   .catch((err) => console.log("Error ", err));
 

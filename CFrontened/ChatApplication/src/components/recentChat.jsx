@@ -14,7 +14,7 @@ const RecentChats = () => {
     // console.log("Fetching recent chats for user:", profile.userName);
     try {
       const response = await axios.get(
-        `http://localhost:3000/chatroom/${profile.userName}/recentchats`,
+        `${import.meta.env.VITE_ORIGIN}/chatroom/${profile.userName}/recentchats`,
         {},
         { withCredentials: true }
       );

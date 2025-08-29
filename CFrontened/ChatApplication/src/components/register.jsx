@@ -29,7 +29,7 @@ const RegisterPage = ({ onClose }) => {
     };
     try {
       const response = await axios.post(
-        "http://localhost:3000/newuser/register",
+        `${import.meta.env.VITE_ORIGIN}/newuser/register`,
         postData
       );
       if (response.status === 200) {
@@ -54,7 +54,7 @@ const RegisterPage = ({ onClose }) => {
     setLoading(true);       
     try {
       const response = await axios.post(
-        "http://localhost:3000/newuser/sendotp",
+       `${process.env.ORIGIN}/newuser/sendotp`,
         { email }
       );
       if (response.status === 200) {
@@ -78,7 +78,7 @@ const RegisterPage = ({ onClose }) => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:3000/newuser/verifyotp",
+        `${process.env.ORIGIN}/newuser/verifyotp`,
         { email, otp }
       );
       if (response.status === 200) {

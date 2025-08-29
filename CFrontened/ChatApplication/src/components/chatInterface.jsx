@@ -5,7 +5,7 @@ import { useUser } from "./context";
 
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000", { autoConnect: false });
+const socket = io(import.meta.env.VITE_ORIGIN, { autoConnect: false });
 
 const ChatInterface = () => {
   const { userid1, userid2, chatroomId } = useParams();
@@ -16,7 +16,7 @@ const ChatInterface = () => {
     try {
       // console.log("Axios Post:");
       const response = await axios.post(
-        `http://localhost:3000/message/${userid1}/message`,
+        `${import.meta.env.VITE_ORIGIN}/message/${userid1}/message`,
         {
           senderId: userid1,
           receiverId: userid2,
@@ -36,7 +36,7 @@ const ChatInterface = () => {
     try {
       // console.log("Axios Get:");
       const response = await axios.get(
-        `http://localhost:3000/message/${chatroomId}`,
+        `${import.meta.env.VITE_ORIGIN}/message/${chatroomId}`,
         {},
         { withCredentials: true }
       );
