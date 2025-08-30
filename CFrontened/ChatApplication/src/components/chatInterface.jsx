@@ -14,7 +14,7 @@ const ChatInterface = () => {
 
   const axiosPostData = async () => {
     try {
-      console.log("Axios Post:");
+      // console.log("Axios Post:");
       const response = await axios.post(
         `${import.meta.env.VITE_ORIGIN}/message/${userid1}/message`,
         {
@@ -26,24 +26,24 @@ const ChatInterface = () => {
         { withCredentials: true }
       );
 
-      console.log("Message sent:", response);
+      // console.log("Message sent:", response);
     } catch (error) {
-      console.error("Error sending message:", error);
+      // console.error("Error sending message:", error);
     }
   };
 
   const axiosGetData = async () => {
     try {
-      console.log("Axios Get:");
+      // console.log("Axios Get:");
       const response = await axios.get(
         `${import.meta.env.VITE_ORIGIN}/message/${chatroomId}`,
         {},
         { withCredentials: true }
       );
       setMessages(response.data);
-      console.log("Messages fetched:", response.data);
+      // console.log("Messages fetched:", response.data);
     } catch (error) {
-      console.error("Error fetching messages:", error);
+      // console.error("Error fetching messages:", error);
     }
   };
 
@@ -53,10 +53,10 @@ const ChatInterface = () => {
       socket.connect();
     }
     socket.emit("joinRoom", chatroomId);
-    console.log(`${userid1} Joined room: ${chatroomId}`);
+    // console.log(`${userid1} Joined room: ${chatroomId}`);
 
     socket.on("receiveMessage", (data) => {
-      console.log("Received message:", data);
+      // console.log("Received message:", data);
       // console.log("Listening for receiveMessage...");
       setMessages((prev) => [...prev, data]);
       // console.log(data);

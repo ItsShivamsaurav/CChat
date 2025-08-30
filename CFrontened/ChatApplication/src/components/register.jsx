@@ -33,7 +33,7 @@ const RegisterPage = ({ onClose }) => {
         postData
       );
       if (response.status === 200) {
-        console.log(response.data);
+        // console.log(response.data);
         setAlert({ type: "success", message: "User registered successfully!" });
       }
     } catch (error) {
@@ -58,7 +58,7 @@ const RegisterPage = ({ onClose }) => {
         { email }
       );
       if (response.status === 200) {
-        console.log(response.data);
+        // console.log(response.data);
         setAlert({ type: "success", message: "otp send successfully!" });
         setOtpSend(false);
         setOtpVerify(true);
@@ -73,7 +73,7 @@ const RegisterPage = ({ onClose }) => {
   };
 
   const handlesubmitOtpVerify = async (e) => {
-    console.log("verifying otp", otp, email);
+    // console.log("verifying otp", otp, email);
     e.preventDefault();
     setLoading(true);
     try {
@@ -82,7 +82,7 @@ const RegisterPage = ({ onClose }) => {
         { email, otp }
       );
       if (response.status === 200) {
-        console.log(response.data);
+        // console.log(response.data);
         setAlert({ type: "success", message: "otp verified successfully!" });
         setOtpVerified(true);
         setOtpVerify(false);    
