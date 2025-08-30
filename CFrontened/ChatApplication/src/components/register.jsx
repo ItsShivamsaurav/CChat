@@ -54,7 +54,7 @@ const RegisterPage = ({ onClose }) => {
     setLoading(true);       
     try {
       const response = await axios.post(
-       `${process.env.ORIGIN}/newuser/sendotp`,
+       `${import.meta.env.VITE_ORIGIN}/newuser/sendotp`,
         { email }
       );
       if (response.status === 200) {
@@ -78,7 +78,7 @@ const RegisterPage = ({ onClose }) => {
     setLoading(true);
     try {
       const response = await axios.post(
-        `${process.env.ORIGIN}/newuser/verifyotp`,
+        `${import.meta.env.VITE_ORIGIN}/newuser/verifyotp`,
         { email, otp }
       );
       if (response.status === 200) {
