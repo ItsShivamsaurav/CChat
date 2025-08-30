@@ -19,7 +19,7 @@ const LoginPage = ({ onClose }) => {
 
   const axiosPostData = async () => {
     setLoading(true);
-    console.log("Logging in user:", email);
+    // console.log("Logging in user:", email);
     const postData = {
       email,
       password,
@@ -33,7 +33,7 @@ const LoginPage = ({ onClose }) => {
         }
       );
        if (response.status === 200) {
-        console.log("response: ",response);
+        // console.log("response: ",response);
         // console.log('response',x);
         setAlert({ type: "success", message: "Verified user." });
         document.cookie = `authToken=${response.data.token}; path=/; secure; samesite=strict`;
